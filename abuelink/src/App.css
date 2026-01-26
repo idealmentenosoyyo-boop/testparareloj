@@ -1,0 +1,7 @@
+/* Limpio para que Tailwind tenga el control total */
+#root {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
