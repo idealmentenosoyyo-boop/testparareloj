@@ -408,6 +408,9 @@ class ProtocolDecoder:
                 result.update(ProtocolDecoder._parse_spo2_data(cmd_parts[1:]))
                 return result
             # TKQ, TKQ2, etc return basic result (enough to trigger connection register)
+            if command in ['FALLDOWN', 'FIND', 'LSSET', 'RESET', 'POWEROFF', 'FACTORY']:
+                result['type'] = 'CMD_REPLY'
+                
             return result
             
         except Exception as e:
@@ -633,6 +636,15 @@ def handle_client(conn, addr):
                         if parsed.get('type') == 'ALARM':
                             parsed['device_id'] = parsed.get('device_id', 'unknown')
                             save_location(parsed) # Saving alarm loc same as position for now
+                        
+                        # Save Command Replies (FALLDOWN, FIND, etc)
+                        if parsed.get('type') == 'CMD_REPLY':
+                             # Save to daily log as system event
+                             _save_to_daily_log(
+                                 parsed.get('device_id', 'unknown'), 
+                                 {'raw': parsed.get('raw'), 'cmd': parsed.get('command')}, 
+                                 'CMD_REPLY'
+                             )
                 
                 # Binary skip (Legacy/Alternative protocol check)
                 pass
