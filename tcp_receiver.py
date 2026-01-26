@@ -639,11 +639,21 @@ def handle_client(conn, addr):
                         
                         # Save Command Replies (FALLDOWN, FIND, etc)
                         if parsed.get('type') == 'CMD_REPLY':
-                             # Save to daily log as system event
+                             # 1. Save to daily log as system event (History)
                              _save_to_daily_log(
                                  parsed.get('device_id', 'unknown'), 
                                  {'raw': parsed.get('raw'), 'cmd': parsed.get('command')}, 
                                  'CMD_REPLY'
+                             )
+                             
+                             # 2. Update HOT device document (Real-time status)
+                             _get_or_create_device(
+                                 parsed.get('device_id', 'unknown'),
+                                 {
+                                     'last_command_reply': parsed.get('command'),
+                                     'last_command_raw': parsed.get('raw'),
+                                     'last_command_timestamp': firestore.SERVER_TIMESTAMP
+                                 }
                              )
                 
                 # Binary skip (Legacy/Alternative protocol check)
