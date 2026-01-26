@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decodificador ASR3603S</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #f0f2f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .hex-input { font-family: 'Courier New', monospace; letter-spacing: 1px; }
+    </style>
+</head>
+<body class="p-8">
+
+    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+        <!-- Header -->
+        <div class="bg-blue-600 p-6 text-white">
+            <h1 class="text-2xl font-bold"><i class="fas fa-satellite-dish mr-2"></i>Decodificador ASR3603S</h1>
+            <p class="opacity-80 mt-1">Herramienta de análisis de tramas GPS</p>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6 space-y-6">
+            
+            <!-- Input Area -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Pegar Trama Hexadecimal</label>
+                <textarea id="hexInput" rows="4" 
+                    class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hex-input bg-gray-50"
+                    placeholder="Ej: FF41515348..."></textarea>
+                <div class="mt-2 flex justify-end">
+                    <button onclick="decodePacket()" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition duration-200">
+                        <i class="fas fa-search mr-2"></i>Decodificar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Area -->
+            <div id="results" class="hidden">
+                <div class="border-t pt-6">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-800">Resultados del Análisis</h2>
+                    
+                    <!-- Status Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                            <div class="text-xs text-blue-600 font-bold uppercase">Longitud Trama</div>
+                            <div class="text-2xl font-mono text-blue-900" id="packetLength">0 bytes</div>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg border border-green-100">
+                            <div class="text-xs text-green-600 font-bold uppercase">Coordenadas</div>
+                            <div class="text-2xl font-mono text-green-900" id="coordStatus">Encontradas</div>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg border border-purple-100">
+                            <div class="text-xs text-purple-600 font-bold uppercase">Protocolo</div>
+                            <div class="text-2xl font-mono text-purple-900">ASR3603S</div>
+                        </div>
+                    </div>
+
+                    <!-- Map & Details -->
+                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            
+                            <!-- Coordinates -->
+                            <div>
+                                <h3 class="font-bold text-gray-700 mb-4">📍 Posición Detectada</h3>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between items-center bg-white p-3 rounded shadow-sm">
+                                        <span class="text-gray-500">Latitud</span>
+                                        <span class="font-mono font-bold text-gray-900" id="latValue">--</span>
+                                    </div>
+                                    <div class="flex justify-between items-center bg-white p-3 rounded shadow-sm">
+                                        <span class="text-gray-500">Longitud</span>
+                                        <span class="font-mono font-bold text-gray-900" id="lngValue">--</span>
+                                    </div>
+                                    <div class="flex justify-between items-center bg-white p-3 rounded shadow-sm">
+                                        <span class="text-gray-500">Offset (Lat/Lng)</span>
+                                        <span class="font-mono text-sm text-gray-600" id="offsetValue">--</span>
+                                    </div>
+                                </div>
+                                <div class="mt-6">
+                                    <a id="mapsLink" href="#" target="_blank" 
+                                       class="block w-full text-center bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition">
+                                        <i class="fas fa-map-marker-alt mr-2"></i>Ver en Google Maps
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Raw Analysis -->
+                            <div>
+                                <h3 class="font-bold text-gray-700 mb-4">🔍 Detalles Técnicos</h3>
+                                <div class="bg-gray-900 text-gray-300 p-4 rounded-lg font-mono text-xs overflow-y-auto h-48" id="logOutput">
+                                    Esperando análisis...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Error Message -->
+            <div id="errorMessage" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
+                <p class="font-bold">Error</p>
+                <p id="errorText">Algo salió mal.</p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function log(msg) {
+            const logEl = document.getElementById('logOutput');
+            const time = new Date().toLocaleTimeString();
+            logEl.innerHTML += `<div><span class="text-gray-500">[${time}]</span> ${msg}</div>`;
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('logOutput').innerHTML = '';
+        }
+
+        function decodePacket() {
+            const hexInput = document.getElementById('hexInput').value.replace(/\s+/g, '').toUpperCase();
+            const results = document.getElementById('results');
+            const errorMsg = document.getElementById('errorMessage');
+            
+            clearLog();
+            results.classList.add('hidden');
+            errorMsg.classList.add('hidden');
+
+            if (!hexInput) return;
+
+            try {
+                // Convert hex to bytes
+                if (hexInput.length % 2 !== 0) throw new Error("Longitud Hex inválida (impar)");
+                
+                const buffer = new ArrayBuffer(hexInput.length / 2);
+                const view = new DataView(buffer);
+                const bytes = new Uint8Array(buffer);
+                
+                for (let i = 0; i < hexInput.length; i += 2) {
+                    bytes[i / 2] = parseInt(hexInput.substring(i, i + 2), 16);
+                }
+
+                document.getElementById('packetLength').textContent = `${bytes.length} bytes`;
+                log(`Analizando ${bytes.length} bytes...`);
+
+                // Check Header
+                const header = hexInput.substring(0, 10);
+                if (header !== "FF41515348") {
+                    log(`<span class="text-yellow-400">⚠️ Header inusual: ${header}</span>`);
+                } else {
+                    log(`<span class="text-green-400">✓ Header Válido (FF41515348)</span>`);
+                }
+
+                // Search Coordinates
+                let bestPair = null;
+                const candidates = { lats: [], lngs: [] };
+
+                // Scan logic (ported from Python)
+                for (let i = 0; i < bytes.length - 3; i++) {
+                    const val = view.getInt32(i, false); // Big Endian
+                    const coord = val / 10000000.0;
+
+                    // Lat check (Chile approx)
+                    if (coord > -34.0 && coord < -31.0) {
+                        candidates.lats.push({ offset: i, val: coord });
+                        log(`Lat candidata @ ${i}: ${coord.toFixed(6)}`);
+                    }
+
+                    // Lng check (Chile approx)
+                    if (coord > -72.0 && coord < -67.0) {
+                        candidates.lngs.push({ offset: i, val: coord });
+                        log(`Lng candidata @ ${i}: ${coord.toFixed(6)}`);
+                    }
+                }
+
+                // Find best pair
+                let minDist = Infinity;
+                
+                candidates.lats.forEach(lat => {
+                    candidates.lngs.forEach(lng => {
+                        const dist = Math.abs(lat.offset - lng.offset);
+                        if (dist < minDist && dist <= 50) {
+                            minDist = dist;
+                            bestPair = { lat: lat.val, lng: lng.val, latOff: lat.offset, lngOff: lng.offset };
+                        }
+                    });
+                });
+
+                if (bestPair) {
+                    // Success
+                    document.getElementById('latValue').textContent = bestPair.lat.toFixed(6);
+                    document.getElementById('lngValue').textContent = bestPair.lng.toFixed(6);
+                    document.getElementById('offsetValue').textContent = `Lat: ${bestPair.latOff} | Lng: ${bestPair.lngOff}`;
+                    document.getElementById('mapsLink').href = `https://www.google.com/maps?q=${bestPair.lat},${bestPair.lng}`;
+                    
+                    log(`<span class="text-green-400 font-bold">✓ ÉXITO: Coordenadas encontradas</span>`);
+                    results.classList.remove('hidden');
+                } else {
+                    throw new Error("No se encontraron coordenadas válidas para Chile en este paquete.");
+                }
+
+            } catch (e) {
+                document.getElementById('errorText').textContent = e.message;
+                errorMsg.classList.remove('hidden');
+                log(`<span class="text-red-400">❌ Error: ${e.message}</span>`);
+            }
+        }
+    </script>
+</body>
+</html>

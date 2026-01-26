@@ -1,0 +1,130 @@
+[
+  {
+    "timestamp": "2026-01-22T11:51:54.285653",
+    "ip": "127.0.0.1",
+    "lat": -39.5744662,
+    "lng": -66.1932994,
+    "protocol": "BINARY",
+    "device_id": "unknown"
+  },
+  {
+    "timestamp": "2026-01-22T11:53:34.130856",
+    "ip": "127.0.0.1",
+    "lat": -39.5744662,
+    "lng": -66.1932994,
+    "protocol": "BINARY",
+    "device_id": "unknown"
+  },
+  {
+    "timestamp": "2026-01-22T11:54:52.758734",
+    "ip": "127.0.0.1",
+    "lat": -39.5744662,
+    "lng": -66.1932994,
+    "protocol": "BINARY",
+    "device_id": "unknown"
+  },
+  {
+    "timestamp": "2026-01-22T11:56:26.995248",
+    "ip": "127.0.0.1",
+    "lat": -39.5744662,
+    "lng": -66.1932994,
+    "protocol": "BINARY",
+    "device_id": "unknown"
+  },
+  {
+    "timestamp": "2026-01-22T11:58:20.352125",
+    "ip": "127.0.0.1",
+    "lat": -39.5744662,
+    "lng": -66.1932994,
+    "protocol": "BINARY",
+    "device_id": "unknown"
+  },
+  {
+    "timestamp": "2026-01-22T12:01:19.157103",
+    "ip": "127.0.0.1",
+    "lat": -39.5744662,
+    "lng": -66.1932994,
+    "protocol": "BINARY",
+    "device_id": "unknown"
+  },
+  {
+    "timestamp": "2026-01-22T12:03:24.134047",
+    "ip": "127.0.0.1",
+    "lat": -39.5744662,
+    "lng": -66.1932994,
+    "protocol": "BINARY",
+    "device_id": "unknown"
+  },
+  {
+    "timestamp": "2026-01-22T12:06:22.295395",
+    "ip": "127.0.0.1",
+    "lat": -39.2006571,
+    "lng": -66.1932994,
+    "protocol": "BINARY",
+    "device_id": "unknown"
+  },
+  {
+    "timestamp": "2026-01-22T12:08:30.622494",
+    "ip": "127.0.0.1",
+    "lat": -39.8397426,
+    "lng": -66.1932994,
+    "protocol": "BINARY",
+    "device_id": "unknown"
+  },
+  {
+    "timestamp": "2026-01-22T12:10:39.157468",
+    "ip": "127.0.0.1",
+    "lat": -38.8306203,
+    "lng": -66.1932994,
+    "protocol": "BINARY",
+    "device_id": "unknown"
+  },
+  {
+    "timestamp": "2026-01-22T12:12:45.253309",
+    "ip": "127.0.0.1",
+    "lat": -39.4299829,
+    "lng": -66.1932994,
+    "protocol": "BINARY",
+    "device_id": "unknown"
+  },
+  {
+    "timestamp": "2026-01-22T12:13:16.597411",
+    "ip": "127.0.0.1",
+    "lat": -40.193403,
+    "lng": -66.1932994,
+    "protocol": "BINARY",
+    "device_id": "unknown"
+  },
+  {
+    "timestamp": "2026-01-22T12:15:25.079409",
+    "ip": "127.0.0.1",
+    "lat": -40.193403,
+    "lng": -66.1932994,
+    "protocol": "BINARY",
+    "device_id": "unknown"
+  },
+  {
+    "timestamp": "2026-01-22T12:15:51.654597",
+    "ip": "127.0.0.1",
+    "lat": -40.193403,
+    "lng": -66.1932994,
+    "protocol": "BINARY",
+    "device_id": "unknown"
+  },
+  {
+    "timestamp": "2026-01-22T12:17:19.546122",
+    "ip": "127.0.0.1",
+    "lat": -40.193403,
+    "lng": -66.1932994,
+    "protocol": "BINARY",
+    "device_id": "unknown"
+  },
+  {
+    "timestamp": "2026-01-22T12:18:38.331581",
+    "ip": "127.0.0.1",
+    "lat": -40.193403,
+    "lng": -66.1932994,
+    "protocol": "BINARY",
+    "device_id": "unknown"
+  }
+]
