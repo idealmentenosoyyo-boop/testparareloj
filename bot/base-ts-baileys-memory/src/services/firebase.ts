@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collectionGroup, query, where, onSnapshot, Timestamp } from "firebase/firestore";
+import { getFirestore, collectionGroup, query, where, onSnapshot, Timestamp, doc } from "firebase/firestore";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCeSqOfqHkMhAfhP4m7f-5OiUE2s_oRPww",
@@ -13,6 +13,29 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
+
+export const monitorDeviceChanges = (deviceId: string, callback: (data: any) => Promise<void>) => {
+    console.log(`Starting monitoring for device ${deviceId}...`);
+    const docRef = doc(db, 'devices', deviceId);
+    let isFirstRun = true;
+
+    const unsubscribe = onSnapshot(docRef, (docSnap) => {
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            if (isFirstRun) {
+                isFirstRun = false;
+                console.log(`Initial data loaded for device ${deviceId}.`);
+                return;
+            }
+            console.log(`Change detected for device ${deviceId}`);
+            callback(data);
+        }
+    }, (error) => {
+        console.error("Error monitoring device:", error);
+    });
+
+    return unsubscribe;
+};
 
 export const monitorFalls = (callback: (data: any) => Promise<void>) => {
     console.log("Starting fall monitoring...");

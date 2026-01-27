@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDailyLogs } from '../hooks/useDailyLogs';
 import { useDevice } from '../hooks/useDevice';
-import { ArrowLeft, Calendar, Activity, MapPin, Footprints, Battery, Radio, Heart, Thermometer } from 'lucide-react';
+import { ArrowLeft, Calendar, Activity, MapPin, Footprints, Battery, Radio, Heart } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts';
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
